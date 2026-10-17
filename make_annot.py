@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import gzip
 
 import numpy as np
 import pandas as pd
@@ -37,11 +36,7 @@ def make_annot_files(args, bed_for_annot):
     df_annot = pd.merge(df_bim, df_int, how="left", on="BP")
     df_annot.fillna(0, inplace=True)
     df_annot = df_annot[["ANNOT"]].astype(int)
-    if args.annot_file.endswith(".gz"):
-        with gzip.open(args.annot_file, "wb") as f:
-            df_annot.to_csv(f, sep="\t", index=False)
-    else:
-        df_annot.to_csv(args.annot_file, sep="\t", index=False)
+    df_annot.to_csv(args.annot_file, sep="\t", index=False)
 
 
 if __name__ == "__main__":
