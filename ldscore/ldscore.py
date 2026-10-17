@@ -1,6 +1,6 @@
 
-import numpy as np
 import bitarray as ba
+import numpy as np
 
 
 def getBlockLefts(coords, max_dist):
@@ -60,7 +60,7 @@ def block_left_to_right(block_left):
     return block_right
 
 
-class __GenotypeArrayInMemory__(object):
+class __GenotypeArrayInMemory__:
     '''
     Parent class for various classes containing interfaces for files with genotype
     matrices, e.g., plink .bed files, etc
@@ -85,7 +85,7 @@ class __GenotypeArrayInMemory__(object):
                 self.n)
 
             if self.n > 0:
-                print('After filtering, {n} individuals remain'.format(n=self.n))
+                print(f'After filtering, {self.n} individuals remain')
             else:
                 raise ValueError('After filtering, no individuals remain')
 
@@ -99,7 +99,7 @@ class __GenotypeArrayInMemory__(object):
             self.geno, self.m, self.n, self.mafMin, keep_snps)
 
         if self.m > 0:
-            print('After filtering, {m} SNPs remain'.format(m=self.m))
+            print(f'After filtering, {self.m} SNPs remain')
         else:
             raise ValueError('After filtering, no SNPs remain')
 
@@ -270,10 +270,10 @@ class PlinkBEDFile(__GenotypeArrayInMemory__):
         self.nru = nru
         # check magic number
         if magicNumber != ba.bitarray('0011011011011000'):
-            raise IOError("Magic number from Plink .bed file not recognized")
+            raise OSError("Magic number from Plink .bed file not recognized")
 
         if bedMode != ba.bitarray('10000000'):
-            raise IOError("Plink .bed file must be in default SNP-major mode")
+            raise OSError("Plink .bed file must be in default SNP-major mode")
 
         # check file length
         self.geno = ba.bitarray(endian="little")
@@ -286,7 +286,7 @@ class PlinkBEDFile(__GenotypeArrayInMemory__):
         real_len = len(geno)
         if real_len != exp_len:
             s = "Plink .bed file has {n1} bits, expected {n2}"
-            raise IOError(s.format(n1=real_len, n2=exp_len))
+            raise OSError(s.format(n1=real_len, n2=exp_len))
 
     def __filter_indivs__(self, geno, keep_indivs, m, n):
         n_new = len(keep_indivs)
@@ -397,7 +397,7 @@ class PlinkBEDFile(__GenotypeArrayInMemory__):
         X = np.fromiter(slice.decode(self._bedcode), dtype="float64").reshape((b, nru)).T
         X = X[0:n, :]
         Y = np.zeros(X.shape)
-        for j in range(0, b):
+        for j in range(b):
             newsnp = X[:, j]
             ii = newsnp != 9
             avg = np.mean(newsnp[ii])

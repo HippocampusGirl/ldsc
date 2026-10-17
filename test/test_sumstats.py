@@ -1,14 +1,16 @@
 
-import ldscore.sumstats as s
-import ldscore.parse as ps
+import os
 import unittest
+
+import ldscore.parse as ps
+import ldscore.sumstats as s
 import numpy as np
 import pandas as pd
-from pandas.testing import assert_series_equal, assert_frame_equal
-from nose.tools import *
-from numpy.testing import assert_array_equal, assert_array_almost_equal, assert_allclose
 from nose.plugins.attrib import attr
-import os
+from nose.tools import *
+from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
+from pandas.testing import assert_series_equal
+
 from ldsc import parser
 
 DIR = os.path.dirname(__file__)
@@ -16,7 +18,7 @@ N_REP = 500
 s._N_CHR = 2  # having to mock 22 files is annoying
 
 
-class Mock(object):
+class Mock:
     '''
     Dumb object for mocking args and log
     '''
@@ -90,7 +92,7 @@ def test_valid_snps():
 
 
 def test_bases():
-    x = set(['A', 'T', 'G', 'C'])
+    x = {'A', 'T', 'G', 'C'}
     assert_equal(x, set(s.BASES))
 
 
@@ -193,7 +195,7 @@ def test_strand_ambiguous():
 
 @attr('rg')
 @attr('slow')
-class Test_RG_Statistical():
+class Test_RG_Statistical:
 
     @classmethod
     def setUpClass(cls):
@@ -201,11 +203,11 @@ class Test_RG_Statistical():
         args.ref_ld = DIR + '/simulate_test/ldscore/twold_onefile'
         args.w_ld = DIR + '/simulate_test/ldscore/w'
         args.rg = ','.join(
-            (DIR + '/simulate_test/sumstats/' + str(i) for i in range(N_REP)))
+            DIR + '/simulate_test/sumstats/' + str(i) for i in range(N_REP))
         args.out = DIR + '/simulate_test/1'
         x = s.estimate_rg(args, log)
-        args.intercept_gencov = ','.join(('0' for _ in range(N_REP)))
-        args.intercept_h2 = ','.join(('1' for _ in range(N_REP)))
+        args.intercept_gencov = ','.join('0' for _ in range(N_REP))
+        args.intercept_h2 = ','.join('1' for _ in range(N_REP))
         y = s.estimate_rg(args, log)
         cls.rg = x
         cls.rg_noint = y
@@ -334,7 +336,7 @@ class Test_H2_Statistical(unittest.TestCase):
 
     def test_coef(self):
         # should be h^2/M = [[0.3, 0.9]] / M
-        coef = np.array(((0.3, 0.9))) / self.h2[0].M
+        coef = np.array((0.3, 0.9)) / self.h2[0].M
         for h in [self.h2, self.h2_noint]:
             assert np.all(np.abs(np.nanmean(list(map(t('coef'), h)), axis=0) - coef) < 1e6)
 

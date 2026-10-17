@@ -6,10 +6,11 @@ Iterativey re-weighted least squares.
 '''
 
 import numpy as np
+
 from . import jackknife as jk
 
 
-class IRWLS(object):
+class IRWLS:
 
     '''
     Iteratively re-weighted least squares (FLWS).
@@ -55,12 +56,12 @@ class IRWLS(object):
     '''
 
     def __init__(self, x, y, update_func, n_blocks, w=None, slow=False, separators=None):
-        n, p = jk._check_shape(x, y)
+        n, _p = jk._check_shape(x, y)
         if w is None:
             w = np.ones_like(y)
         if w.shape != (n, 1):
             raise ValueError(
-                'w has shape {S}. w must have shape ({N}, 1).'.format(S=w.shape, N=n))
+                f'w has shape {w.shape}. w must have shape ({n}, 1).')
 
         jknife = self.irwls(
             x, y, update_func, n_blocks, w, slow=slow, separators=separators)
@@ -100,13 +101,13 @@ class IRWLS(object):
             Block jackknife regression with the final IRWLS weights.
 
         '''
-        (n, p) = x.shape
+        (n, _p) = x.shape
         if y.shape != (n, 1):
             raise ValueError(
-                'y has shape {S}. y must have shape ({N}, 1).'.format(S=y.shape, N=n))
+                f'y has shape {y.shape}. y must have shape ({n}, 1).')
         if w.shape != (n, 1):
             raise ValueError(
-                'w has shape {S}. w must have shape ({N}, 1).'.format(S=w.shape, N=n))
+                f'w has shape {w.shape}. w must have shape ({n}, 1).')
 
         w = np.sqrt(w)
         for i in range(2):  # update this later
@@ -148,13 +149,13 @@ class IRWLS(object):
             Output of np.linalg.lstsq
 
         '''
-        (n, p) = x.shape
+        (n, _p) = x.shape
         if y.shape != (n, 1):
             raise ValueError(
-                'y has shape {S}. y must have shape ({N}, 1).'.format(S=y.shape, N=n))
+                f'y has shape {y.shape}. y must have shape ({n}, 1).')
         if w.shape != (n, 1):
             raise ValueError(
-                'w has shape {S}. w must have shape ({N}, 1).'.format(S=w.shape, N=n))
+                f'w has shape {w.shape}. w must have shape ({n}, 1).')
 
         x = cls._weight(x, w)
         y = cls._weight(y, w)
@@ -186,10 +187,10 @@ class IRWLS(object):
         '''
         if np.any(w <= 0):
             raise ValueError('Weights must be > 0')
-        (n, p) = x.shape
+        (n, _p) = x.shape
         if w.shape != (n, 1):
             raise ValueError(
-                'w has shape {S}. w must have shape (n, 1).'.format(S=w.shape))
+                f'w has shape {w.shape}. w must have shape (n, 1).')
 
         w = w / float(np.sum(w))
         x_new = np.multiply(x, w)

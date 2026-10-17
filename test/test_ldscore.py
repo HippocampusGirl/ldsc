@@ -1,9 +1,10 @@
-import ldscore.ldscore as ld
 import unittest
+
 import bitarray as ba
-import numpy as np
-import nose
+import ldscore.ldscore as ld
 import ldscore.parse as ps
+import nose
+import numpy as np
 
 
 def test_getBlockLefts():
@@ -82,7 +83,7 @@ class test_bed(unittest.TestCase):
 
     @nose.tools.raises(ValueError)
     def test_bad_filename(self):
-        bed = ld.PlinkBEDFile('test/plink_test/plink.bim', 9, self.bim)
+        ld.PlinkBEDFile('test/plink_test/plink.bim', 9, self.bim)
 
     @nose.tools.raises(ValueError)
     def test_nextSNPs_errors1(self):

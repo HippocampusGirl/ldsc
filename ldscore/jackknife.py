@@ -15,6 +15,7 @@ of the data.
 
 import numpy as np
 from scipy.optimize import nnls
+
 np.seterr(divide='raise', invalid='raise')
 
 
@@ -48,7 +49,7 @@ def _check_shape_block(xty_block_values, xtx_block_values):
     return xtx_block_values.shape[0:2]
 
 
-class Jackknife(object):
+class Jackknife:
 
     '''
     Base class for jackknife objects. Input involves x,y, so this base class is tailored
@@ -342,7 +343,7 @@ class LstsqJackknifeFast(Jackknife):
             If x.shape[0] does not equal y.shape[0] or x and y are not 2D.
 
         '''
-        n, p = _check_shape(x, y)
+        _n, p = _check_shape(x, y)
         n_blocks = len(s) - 1
         xtx_block_values = np.zeros((n_blocks, p, p))
         xty_block_values = np.zeros((n_blocks, p))
@@ -380,7 +381,7 @@ class LstsqJackknifeFast(Jackknife):
         dimensions of xtx_block_values do not equal the shape of xty_block_values.
 
         '''
-        n_blocks, p = _check_shape_block(xty_block_values, xtx_block_values)
+        _n_blocks, p = _check_shape_block(xty_block_values, xtx_block_values)
         xty = np.sum(xty_block_values, axis=0)
         xtx = np.sum(xtx_block_values, axis=0)
         return np.linalg.solve(xtx, xty).reshape((1, p))
@@ -507,7 +508,7 @@ class RatioJackknife(Jackknife):
         '''
         n_blocks, p = denom.shape
         pseudovalues = np.zeros((n_blocks, p))
-        for j in range(0, n_blocks):
+        for j in range(n_blocks):
             pseudovalues[j, ...] = n_blocks * est - \
                 (n_blocks - 1) * numer[j, ...] / denom[j, ...]
 

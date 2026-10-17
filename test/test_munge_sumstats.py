@@ -1,14 +1,15 @@
 
-import munge_sumstats as munge
 import unittest
+
+import munge_sumstats as munge
+import nose
 import numpy as np
 import pandas as pd
-import nose
-from pandas.testing import assert_series_equal, assert_frame_equal
-from numpy.testing import assert_array_equal, assert_array_almost_equal, assert_allclose
+from numpy.testing import assert_allclose
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 
-class Mock(object):
+class Mock:
 
     '''
     Dumb object for mocking args and log
@@ -183,7 +184,7 @@ class test_parse_dat(unittest.TestCase):
         self.args = munge.parser.parse_args('')
 
     def tearDown(self):
-        args = munge.parser.parse_args('')
+        munge.parser.parse_args('')
 
     def test_no_alleles(self):
         # test that it doesn't crash with no allele columns and the
@@ -231,7 +232,7 @@ def test_get_compression_gzip():
     nose.tools.eq_(x, 'gzip')
     y, x = munge.get_compression('foo.bz2')
     nose.tools.eq_(x, 'bz2')
-    y, x = munge.get_compression('foo.bar')
+    _y, x = munge.get_compression('foo.bar')
     nose.tools.eq_(x, None)
 
 
@@ -315,14 +316,14 @@ class test_end_to_end(unittest.TestCase):
     def test_basic(self):
         x = munge.munge_sumstats(self.args, p=False)
         correct = pd.read_csv(
-            'test/munge_test/correct.sumstats', sep='\s+', header=0)
+            'test/munge_test/correct.sumstats', sep=r'\s+', header=0)
         assert_frame_equal(x, correct)
 
     def test_merge_alleles(self):
         self.args.merge_alleles = 'test/munge_test/merge_alleles'
         x = munge.munge_sumstats(self.args, p=False)
         correct = pd.read_csv(
-            'test/munge_test/correct_merge.sumstats', sep='\s+', header=0)
+            'test/munge_test/correct_merge.sumstats', sep=r'\s+', header=0)
         assert_frame_equal(x, correct)
 
     def test_bad_merge_alleles(self):

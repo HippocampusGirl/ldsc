@@ -1,10 +1,10 @@
 
-from ldscore.irwls import IRWLS
 import unittest
+
 import numpy as np
-import nose
-from numpy.testing import assert_array_equal, assert_array_almost_equal
+from ldscore.irwls import IRWLS
 from nose.tools import assert_raises
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 
 class Test_IRWLS_2D(unittest.TestCase):

@@ -6,10 +6,11 @@ This module contains functions for parsing various ldsc-defined file formats.
 '''
 
 
+import glob
+import os
+
 import numpy as np
 import pandas as pd
-import os
-import glob
 
 
 def series_eq(x, y):
@@ -18,7 +19,7 @@ def series_eq(x, y):
 
 
 def read_csv(fh, **kwargs):
-    return pd.read_csv(fh, sep='\s+', na_values='.', **kwargs)
+    return pd.read_csv(fh, sep=r'\s+', na_values='.', **kwargs)
 
 
 def sub_chr(s, chrom):
@@ -50,7 +51,7 @@ def which_compression(fh):
         suffix = ''
         compression = None
     else:
-        raise IOError('Could not open {F}[./gz/bz2]'.format(F=fh))
+        raise OSError(f'Could not open {fh}[./gz/bz2]')
 
     return suffix, compression
 
@@ -246,7 +247,7 @@ def annot(fh_list, num=None, frqfile=None):
 
 def __ID_List_Factory__(colnames, keepcol, fname_end, header=None, usecols=None):
 
-    class IDContainer(object):
+    class IDContainer:
 
         def __init__(self, fname):
             self.__usecols__ = usecols
@@ -260,11 +261,11 @@ def __ID_List_Factory__(colnames, keepcol, fname_end, header=None, usecols=None)
         def __read__(self, fname):
             end = self.__fname_end__
             if end and not fname.endswith(end):
-                raise ValueError('{f} filename must end in {f}'.format(f=end))
+                raise ValueError(f'{end} filename must end in {end}')
 
             comp = get_compression(fname)
             self.df = pd.read_csv(fname, header=self.__header__, usecols=self.__usecols__,
-                                  sep='\s+', compression=comp)
+                                  sep=r'\s+', compression=comp)
 
             if self.__colnames__:
                 self.df.columns = self.__colnames__

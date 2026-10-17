@@ -8,13 +8,16 @@ Last column = intercept.
 
 '''
 
+from collections import namedtuple
+
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, chi2
+from scipy.stats import chi2, norm
+from scipy.stats import t as tdist
+
 from . import jackknife as jk
 from .irwls import IRWLS
-from scipy.stats import t as tdist
-from collections import namedtuple
+
 np.seterr(divide='raise', invalid='raise')
 
 s = lambda x: remove_brackets(str(np.matrix(x)))
@@ -137,7 +140,7 @@ def h2_obs_to_liab(h2_obs, P, K):
     return h2_obs * conversion_factor
 
 
-class LD_Score_Regression(object):
+class LD_Score_Regression:
 
     def __init__(self, y, x, w, N, M, n_blocks, intercept=None, slow=False, step1_ii=None, old_weights=False):
         for i in [y, x, w, M, N]:
@@ -408,7 +411,7 @@ class Hsq(LD_Score_Regression):
         enrichment_se = prop_hsq_overlap_se / prop_M_overlap
         overlap_matrix_diff = np.zeros([self.n_annot,self.n_annot])
         for i in range(self.n_annot):
-            if not M_tot == M_annot[0,i]:
+            if M_tot != M_annot[0, i]:
                 overlap_matrix_diff[i, :] = overlap_matrix[i,:]/M_annot[0,i] - \
                     (M_annot - overlap_matrix[i,:]) / (M_tot-M_annot[0,i])
 
@@ -471,7 +474,7 @@ class Hsq(LD_Score_Regression):
         out.append('Mean Chi^2: ' + s(self.mean_chisq))
         if self.constrain_intercept:
             out.append(
-                'Intercept: constrained to {C}'.format(C=s(self.intercept)))
+                f'Intercept: constrained to {s(self.intercept)}')
         else:
             out.append(
                 'Intercept: ' + s(self.intercept) + ' (' + s(self.intercept_se) + ')')
@@ -559,7 +562,7 @@ class Gencov(LD_Score_Regression):
         '''Print summary of the LD Score regression.'''
         out = []
         if P is not None and K is not None and\
-                all((i is not None for i in P)) and all((i is not None for i in K)):
+                all(i is not None for i in P) and all(i is not None for i in K):
             T = 'Liability'
             c = gencov_obs_to_liab(1, P[0], P[1], K[0], K[1])
         else:
@@ -579,7 +582,7 @@ class Gencov(LD_Score_Regression):
         out.append('Mean z1*z2: ' + s(self.mean_z1z2))
         if self.constrain_intercept:
             out.append(
-                'Intercept: constrained to {C}'.format(C=s(self.intercept)))
+                f'Intercept: constrained to {s(self.intercept)}')
         else:
             out.append(
                 'Intercept: ' + s(self.intercept) + ' (' + s(self.intercept_se) + ')')
@@ -602,8 +605,8 @@ class Gencov(LD_Score_Regression):
         # remove intercept if we have one
         ld = ref_ld_tot[:, 0].reshape(w_ld.shape)
         if ii is not None:
-            N1 = self.N1[ii].reshape((w_ld.shape))
-            N2 = self.N2[ii].reshape((w_ld.shape))
+            N1 = self.N1[ii].reshape(w_ld.shape)
+            N2 = self.N2[ii].reshape(w_ld.shape)
         else:
             N1 = self.N1
             N2 = self.N2
@@ -676,13 +679,13 @@ class Gencov(LD_Score_Regression):
         return w
 
 
-class RG(object):
+class RG:
 
     def __init__(self, z1, z2, x, w, N1, N2, M, intercept_hsq1=None, intercept_hsq2=None,
                  intercept_gencov=None, n_blocks=200, slow=False, twostep=None):
         self.intercept_gencov = intercept_gencov
         self._negative_hsq = None
-        n_snp, n_annot = x.shape
+        _n_snp, _n_annot = x.shape
         hsq1 = Hsq(np.square(z1), x, w, N1, M, n_blocks=n_blocks, intercept=intercept_hsq1,
                    slow=slow, twostep=twostep)
         hsq2 = Hsq(np.square(z2), x, w, N2, M, n_blocks=n_blocks, intercept=intercept_hsq2,

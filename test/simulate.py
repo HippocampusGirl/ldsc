@@ -22,12 +22,12 @@ def print_ld(x, fh, M):
     # chr1
     y = x.iloc[0:int(len(x) / 2), ]
     y.to_csv(fh + '1' + l2, sep='\t', index=False, float_format='%.3f')
-    print('\t'.join((str(x / 2) for x in M)), file=open(fh + '1' + m, 'wb'))
+    print('\t'.join(str(x / 2) for x in M), file=open(fh + '1' + m, 'wb'))
 
     # chr2
     y = x.iloc[int(len(x) / 2):len(x), ]
     y.to_csv(fh + '2' + l2, sep='\t', index=False, float_format='%.3f')
-    print('\t'.join((str(x / 2) for x in M)), file=open(fh + '2' + m, 'wb'))
+    print('\t'.join(str(x / 2) for x in M), file=open(fh + '2' + m, 'wb'))
 
 two_ldsc = np.abs(100 * np.random.normal(size=2 * N_SNP)).reshape((N_SNP, 2))
 single_ldsc = np.sum(two_ldsc, axis=1).reshape((N_SNP, 1))

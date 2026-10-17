@@ -1,10 +1,12 @@
 
-import ldscore.regressions as reg
 import unittest
-import numpy as np
+
+import ldscore.regressions as reg
 import nose
-from numpy.testing import assert_array_equal, assert_array_almost_equal
-from nose.tools import assert_raises, assert_equal
+import numpy as np
+from nose.tools import assert_equal, assert_raises
+from numpy.testing import assert_array_almost_equal, assert_array_equal
+
 np.set_printoptions(precision=4)
 
 
@@ -82,7 +84,7 @@ class Test_Hsq_1D(unittest.TestCase):
         self.ld = np.ones((4, 1))
         self.w_ld = np.ones((4, 1))
         self.N = 9 * np.ones((4, 1))
-        self.M = np.matrix((7))
+        self.M = np.matrix(7)
         self.hsq = reg.Hsq(
             self.chisq, self.ld, self.w_ld, self.N, self.M, n_blocks=3, intercept=1)
 
@@ -214,7 +216,7 @@ class Test_Gencov_1D(unittest.TestCase):
         self.w_ld = np.ones((4, 1))
         self.N1 = 9 * np.ones((4, 1))
         self.N2 = 7 * np.ones((4, 1))
-        self.M = np.matrix((7))
+        self.M = np.matrix(7)
         self.hsq1 = 0.5
         self.hsq2 = 0.6
         self.gencov = reg.Gencov(self.z1, self.z2, self.ld, self.w_ld, self.N1, self.N2,
@@ -328,7 +330,7 @@ class Test_RG_Bad(unittest.TestCase):
         z1 = (1 / np.sum(ld, axis=1) * 10).reshape((50, 1))
         w_ld = np.ones((50, 1))
         N1 = 9 * np.ones((50, 1))
-        M = np.matrix((-700))
+        M = np.matrix(-700)
         rg = reg.RG(z1, -z1, ld, w_ld, N1, N1,
                     M, 1.0, 1.0, 0, n_blocks=20)
         assert rg._negative_hsq
