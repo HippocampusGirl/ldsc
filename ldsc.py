@@ -333,7 +333,7 @@ def ldscore(args, log):
         elif args.print_snps.endswith('bz2'):
             print_snps = pd.read_csv(args.print_snps, header=None, compression='bz2')
         else:
-            print_snps = pd.read_csv(args.print_snps, header=None)
+            print_snps = pd.read_csv(args.print_snps, header=None, sep=None)
         if len(print_snps.columns) > 1:
             raise ValueError('--print-snps must refer to a file with a one column of SNP IDs.')
         log.log('Reading list of {N} SNPs for which to print LD Scores from {F}'.format(\
@@ -361,12 +361,12 @@ def ldscore(args, log):
         M_5_50 = [np.sum(geno_array.maf > 0.05)]
 
     # print .M
-    fout_M = open(args.out + '.'+ file_suffix +'.M','wb')
+    fout_M = open(args.out + '.'+ file_suffix +'.M','w')
     print('\t'.join(map(str,M)), file=fout_M)
     fout_M.close()
 
     # print .M_5_50
-    fout_M_5_50 = open(args.out + '.'+ file_suffix +'.M_5_50','wb')
+    fout_M_5_50 = open(args.out + '.'+ file_suffix +'.M_5_50','w')
     print('\t'.join(map(str,M_5_50)), file=fout_M_5_50)
     fout_M_5_50.close()
 
@@ -654,7 +654,7 @@ if __name__ == '__main__':
             print('ldsc.py -h describes options.')
     except Exception:
         ex_type, ex, tb = sys.exc_info()
-        log.log( traceback.format_exc(ex) )
+        log.log( traceback.format_exc() )
         raise
     finally:
         log.log('Analysis finished at {T}'.format(T=time.ctime()) )

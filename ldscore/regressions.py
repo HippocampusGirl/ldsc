@@ -519,7 +519,7 @@ class Hsq(LD_Score_Regression):
             Regression weights. Approx equal to reciprocal of conditional variance function.
 
         '''
-        M = float(M)
+        M = float(np.asarray(M).item())
         if intercept is None:
             intercept = 1
 
@@ -693,21 +693,25 @@ class RG(object):
         gencov.N1 = None  # save memory
         gencov.N2 = None
         self.hsq1, self.hsq2, self.gencov = hsq1, hsq2, gencov
-        if (hsq1.tot <= 0 or hsq2.tot <= 0):
-            self._negative_hsq = True
-            self.rg_ratio = self.rg = self.rg_se = 'NA'
-            self.p = self.z = 'NA'
-        else:
-            rg_ratio = np.array(
-                gencov.tot / np.sqrt(hsq1.tot * hsq2.tot)).reshape((1, 1))
-            denom_delete_values = np.sqrt(
-                np.multiply(hsq1.tot_delete_values, hsq2.tot_delete_values))
-            rg = jk.RatioJackknife(
-                rg_ratio, gencov.tot_delete_values, denom_delete_values)
-            self.rg_jknife = float(rg.jknife_est)
-            self.rg_se = float(rg.jknife_se)
-            self.rg_ratio = float(rg_ratio)
-            self.p, self.z = p_z_norm(self.rg_ratio, self.rg_se)
+        if (hsq1.tot > 0 and hsq2.tot > 0):
+            try:
+                rg_ratio = np.array(
+                    gencov.tot / np.sqrt(hsq1.tot * hsq2.tot)).reshape((1, 1))
+                denom_delete_values = np.sqrt(
+                    np.multiply(hsq1.tot_delete_values, hsq2.tot_delete_values))
+                rg = jk.RatioJackknife(
+                    rg_ratio, gencov.tot_delete_values, denom_delete_values)
+                self.rg_jknife = rg.jknife_est.item()
+                self.rg_se = rg.jknife_se.item()
+                self.rg_ratio = rg_ratio.item()
+                self.p, self.z = p_z_norm(self.rg_ratio, self.rg_se)
+                return
+            except Exception:
+                pass
+
+        self._negative_hsq = True
+        self.rg_ratio = self.rg = self.rg_se = 'NA'
+        self.p = self.z = 'NA'
 
     def summary(self, silly=False):
         '''Print output of Gencor object.'''

@@ -420,11 +420,9 @@ def estimate_rg(args, log):
             if args.print_delete_vals:
                 _print_rg_delete_values(rghat, out_prefix_loop, log)
 
-        except Exception:  # keep going if phenotype 50/100 causes an error
-            msg = 'ERROR computing rg for phenotype {I}/{N}, from file {F}.'
-            log.log(msg.format(I=i + 2, N=len(rg_paths), F=rg_paths[i + 1]))
-            ex_type, ex, tb = sys.exc_info()
-            log.log(traceback.format_exc(ex) + '\n')
+        except Exception as ex:  # keep going if phenotype 50/100 causes an error
+            msg = 'ERROR computing rg for phenotype {I}/{N}, from file {F}: {ex}'
+            log.log(msg.format(I=i + 2, N=len(rg_paths), F=rg_paths[i + 1], ex=ex))
             if len(RG) <= i:  # if exception raised before appending to RG
                 RG.append(None)
 
