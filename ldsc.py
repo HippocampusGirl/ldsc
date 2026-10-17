@@ -380,7 +380,7 @@ def ldscore(args, log):
         elif args.print_snps.endswith("bz2"):
             print_snps = pd.read_csv(args.print_snps, header=None, compression="bz2")
         else:
-            print_snps = pd.read_csv(args.print_snps, header=None, sep=None)
+            print_snps = pd.read_csv(args.print_snps, header=None)
         if len(print_snps.columns) > 1:
             raise ValueError(
                 "--print-snps must refer to a file with a one column of SNP IDs."
