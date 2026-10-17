@@ -6,10 +6,16 @@ import ldscore.parse as ps
 import ldscore.sumstats as s
 import numpy as np
 import pandas as pd
-from nose.plugins.attrib import attr
-from nose.tools import *
-from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
+import pytest
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_almost_equal,
+    assert_array_equal,
+    assert_equal,
+)
 from pandas.testing import assert_series_equal
+from pytest import raises as assert_raises
 
 from ldsc import parser
 
@@ -193,12 +199,12 @@ def test_strand_ambiguous():
     assert_equal(m, s.STRAND_AMBIGUOUS)
 
 
-@attr('rg')
-@attr('slow')
+@pytest.mark.rg
+@pytest.mark.slow
 class Test_RG_Statistical:
 
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         args = parser.parse_args('')
         args.ref_ld = DIR + '/simulate_test/ldscore/twold_onefile'
         args.w_ld = DIR + '/simulate_test/ldscore/w'
@@ -276,8 +282,8 @@ class Test_RG_Statistical:
             list(map(t('intercept'), list(map(t('hsq2'), self.rg))))), atol=0.1)
 
 
-@attr('h2')
-@attr('slow')
+@pytest.mark.h2
+@pytest.mark.slow
 class Test_H2_Statistical(unittest.TestCase):
 
     @classmethod

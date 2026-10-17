@@ -6,6 +6,7 @@ import gzip
 import sys
 import time
 import traceback
+from typing import TextIO
 
 import numpy as np
 import pandas as pd
@@ -172,14 +173,14 @@ def get_compression(file_handle):
     return compression
 
 
-def open_file(fh):
+def open_file(fh) -> TextIO:
     """
     Read filename suffixes and load the file correctly. figure out whether it is gzipped,bzip2'ed or not compressed
     """
     if fh.endswith("gz"):
-        openfile = gzip.open(fh, "rt")  # noqa: SIM115
+        openfile: TextIO = gzip.open(fh, mode="rt")  # noqa: SIM115
     elif fh.endswith("bz2"):
-        openfile = bz2.BZ2File(fh)
+        openfile = bz2.open(fh, mode="rt")  # pyright: ignore[reportAssignmentType] # noqa: SIM115
     else:
         openfile = open(fh, "r")  # noqa: SIM115
 

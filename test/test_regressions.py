@@ -2,10 +2,9 @@
 import unittest
 
 import ldscore.regressions as reg
-import nose
 import numpy as np
-from nose.tools import assert_equal, assert_raises
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal, assert_equal
+from pytest import raises as assert_raises
 
 np.set_printoptions(precision=4)
 
@@ -46,7 +45,7 @@ def test_append_intercept():
 
 def test_remove_brackets():
     x = ' [] [] asdf [] '
-    nose.tools.assert_equal(reg.remove_brackets(x), 'asdf')
+    assert_equal(reg.remove_brackets(x), 'asdf')
 
 
 class Test_h2_obs_to_liab(unittest.TestCase):

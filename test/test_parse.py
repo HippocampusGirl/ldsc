@@ -5,8 +5,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from ldscore import parse as ps
-from nose.tools import *
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_equal
+from pytest import raises as assert_raises
 
 DIR = os.path.dirname(__file__)
 
